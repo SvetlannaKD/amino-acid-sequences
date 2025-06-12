@@ -1,15 +1,25 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { cn as bem } from "@bem-react/classname";
 import { ConfigProvider, Form, type FormInstance } from "antd";
-import type { IFormAlignAminoAcidSequences } from "../../types";
+import type { IFormAlignSequences } from "../../types";
+import "./style.less";
 import { FormInput } from "../../ui/form-Input";
+import FormControl from "../../ui/form-control";
 
-interface IFormAlignAminoAcidSequencesProps {
-  form: FormInstance<IFormAlignAminoAcidSequences>;
+interface IFormAlignSequencesProps {
+  form: FormInstance<IFormAlignSequences>;
+  onSubmit: (values: IFormAlignSequences) => void;
 }
 
-function FormAlignAminoAcidSequences(props: IFormAlignAminoAcidSequencesProps) {
-  const cn = bem("FormAlignAminoAcidSequences");
+function FormAlignSequences(props: IFormAlignSequencesProps) {
+  const callbacks = {
+    onReset: useCallback(() => {
+      props.form.resetFields();
+    }, []),
+  };
+
+  const cn = bem("FormAlignSequences");
+
   return (
     <ConfigProvider
       theme={{
@@ -19,16 +29,18 @@ function FormAlignAminoAcidSequences(props: IFormAlignAminoAcidSequencesProps) {
       }}
     >
       <Form
-        form={props.form}
         className={cn()}
         layout="vertical"
+        form={props.form}
+        onFinish={props.onSubmit}
         // для общей ошибки
         onFieldsChange={() => {
           props.form.resetFields(["generalErrors"]);
         }}
       >
+        <h2>Форма</h2>
         <Form.Item
-          name="firstAminoAcidSequences"
+          name="first"
           label="Первая аминокислотная последовательность"
           rules={[
             {
@@ -43,7 +55,7 @@ function FormAlignAminoAcidSequences(props: IFormAlignAminoAcidSequencesProps) {
           />
         </Form.Item>
         <Form.Item
-          name="secondAminoAcidSequences"
+          name="second"
           label="Вторая аминокислотная последовательность"
           rules={[
             {
@@ -57,9 +69,14 @@ function FormAlignAminoAcidSequences(props: IFormAlignAminoAcidSequencesProps) {
             form={props.form}
           />
         </Form.Item>
+        <FormControl
+          successTitle="Запустить выравнивание"
+          cancelTitle="Отменить"
+          onCancel={callbacks.onReset}
+        />
       </Form>
     </ConfigProvider>
   );
 }
 
-export default memo(FormAlignAminoAcidSequences);
+export default memo(FormAlignSequences);
