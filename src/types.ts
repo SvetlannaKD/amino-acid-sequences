@@ -1,8 +1,17 @@
-export interface ISequences {
-  first: string;
-  second: string;
+interface IAminoAcid {
+  id: string;
+  text: string;
+  color: string | null;
 }
 
-export interface IFormAlignSequences extends ISequences {
+export interface ISequences {
+  id: string;
+  first: IAminoAcid[];
+  second: IAminoAcid[];
+}
+
+export interface IFormAlignSequences {
+  first: string;
+  second: string;
   generalErrors: string[];
 }

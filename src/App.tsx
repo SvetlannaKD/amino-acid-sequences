@@ -1,6 +1,8 @@
 import { Form } from "antd";
 import { useCallback, useState } from "react";
 import type { ISequences, IFormAlignSequences } from "./types";
+import { v4 as uuidv4 } from "uuid";
+import colorAminoAcids from "./utils/color-amino-acids";
 import "./App.css";
 import FormAlignSequences from "./componets/form-align-sequences";
 import Sequences from "./componets/sequences";
@@ -14,13 +16,24 @@ function App() {
     onSubmit: useCallback((values: IFormAlignSequences) => {
       setSequences((prevSequences) => {
         const arrPrevSequences = prevSequences ?? [];
-        const newSequences = [
-          {
-            first: values.first,
-            second: values.second,
-          },
-          ...arrPrevSequences,
-        ];
+
+        const arrFirst = colorAminoAcids(values.first);
+
+        const arrSecond = values.second.split("").map((elem, index) => {
+          let color: string | null = null;
+          if (values.first.slice(index, index + 1) !== elem) {
+            color = "red";
+          }
+          const newElem = { id: uuidv4(), text: elem, color };
+          return newElem;
+        });
+
+        const sequence = {
+          id: uuidv4(),
+          first: arrFirst,
+          second: arrSecond,
+        };
+        const newSequences = [sequence, ...arrPrevSequences];
         return newSequences;
       });
     }, []),
