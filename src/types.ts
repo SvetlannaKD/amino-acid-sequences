@@ -1,4 +1,4 @@
-interface IAminoAcid {
+export interface IAminoAcid {
   id: string;
   text: string;
   color: string | null;

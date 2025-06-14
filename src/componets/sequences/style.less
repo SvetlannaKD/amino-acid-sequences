@@ -1,7 +1,13 @@
 .Sequences {
   margin-top: 40px;
 
-  &-aminoAcids {
+  &-item {
+    word-break: break-all;
     margin-top: 20px;
+    position: relative;
+
+    &:not(&:nth-child(2)) {
+      margin-top: 40px;
+    }
   }
 }

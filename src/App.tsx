@@ -1,11 +1,12 @@
-import { Form } from "antd";
-import { useCallback, useState } from "react";
-import type { ISequences, IFormAlignSequences } from "./types";
-import { v4 as uuidv4 } from "uuid";
-import colorAminoAcids from "./utils/color-amino-acids";
-import "./App.css";
-import FormAlignSequences from "./componets/form-align-sequences";
-import Sequences from "./componets/sequences";
+import { Form } from 'antd';
+import { useCallback, useState } from 'react';
+import type { ISequences, IFormAlignSequences } from './types';
+import { v4 as uuidv4 } from 'uuid';
+import colorAminoAcidsRegex from './utils/color-amino-acids-regex';
+import colorAminoAcids from './utils/color-amino-acids';
+import './App.less';
+import FormAlignSequences from './componets/form-align-sequences';
+import Sequences from './componets/sequences';
 
 function App() {
   const [form] = Form.useForm<IFormAlignSequences>();
@@ -16,17 +17,9 @@ function App() {
     onSubmit: useCallback((values: IFormAlignSequences) => {
       setSequences((prevSequences) => {
         const arrPrevSequences = prevSequences ?? [];
-
-        const arrFirst = colorAminoAcids(values.first);
-
-        const arrSecond = values.second.split("").map((elem, index) => {
-          let color: string | null = null;
-          if (values.first.slice(index, index + 1) !== elem) {
-            color = "red";
-          }
-          const newElem = { id: uuidv4(), text: elem, color };
-          return newElem;
-        });
+        // TODO: на регулярке выше скорость, нужно сделать ее адаптивнее для 2 последовательности
+        const arrFirst = colorAminoAcidsRegex(values.first);
+        const arrSecond = colorAminoAcids(values.second, values.first);
 
         const sequence = {
           id: uuidv4(),

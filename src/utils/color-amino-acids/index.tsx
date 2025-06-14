@@ -1,47 +1,53 @@
-import type { ISequences } from "../../types";
-import { v4 as uuidv4 } from "uuid";
+import type { ISequences } from '../../types';
+import { v4 as uuidv4 } from 'uuid';
+
+const colors = {
+  // yellow
+  C: '#ffea00',
+  // green
+  A: '#67e4a6',
+  I: '#67e4a6',
+  L: '#67e4a6',
+  M: '#67e4a6',
+  F: '#67e4a6',
+  W: '#67e4a6',
+  Y: '#67e4a6',
+  V: '#67e4a6',
+  P: '#67e4a6',
+  // gray
+  G: '#c4c4c4',
+  // pink
+  D: '#fc9cac',
+  E: '#fc9cac',
+  // violet
+  K: '#bb99ff',
+  R: '#bb99ff',
+  // blue
+  S: '#80bfff',
+  T: '#80bfff',
+  H: '#80bfff',
+  Q: '#80bfff',
+  N: '#80bfff',
+};
+
+const mapColors = new Map(Object.entries(colors));
 
 /**
  * Поиск и маркировка в определенный цвет аминокислот в последовательности
- * @param sequences {String} Последовательность
+ * @param sequences {String} Последовательность (вторая)
+ * @param sequencesFirst {String} Первая последовательность для сравнения со второй
  * @returns {Object} Объект с последовательностью, который разбит на аминокислоты по цветам (если они есть)
  */
-export default function colorAminoAcids(
-  sequences: string
-): ISequences["first"] {
-  const regex = new RegExp(
-    "(?<yellow>C)|(?<green>[AILMFWYVP]+)|(?<gray>G)|(?<pink>[DE]+)|(?<violet>[KR]+)|(?<blue>[STHQN]+)",
-    "g"
-  );
-
-  const arrSequences: ISequences["first"] = [];
-  let index = 0;
-  // Создаем перебираемый объект с результатами найденных символов по regex
-  const iteratorSequences = sequences.matchAll(regex);
-
-  for (const match of iteratorSequences) {
-    const notFound = match.input.slice(index, match.index);
-    if (notFound) {
-      arrSequences.push({ id: uuidv4(), text: notFound, color: null });
+export default function colorAminoAcids(sequences: string, sequencesFirst: string): ISequences['first'] {
+  const arrSequences = sequences.split('').map((elem, index) => {
+    let color: string | null = null;
+    if (sequencesFirst.slice(index, index + 1) !== elem) {
+      color = mapColors.get(elem) ?? null;
     }
 
-    let color = null;
-    if (match.groups?.yellow) {
-      color = "#ffea00";
-    } else if (match.groups?.green) {
-      color = "#67e4a6";
-    } else if (match.groups?.gray) {
-      color = "#c4c4c4";
-    } else if (match.groups?.pink) {
-      color = "#fc9cac";
-    } else if (match.groups?.violet) {
-      color = "#bb99ff";
-    } else if (match.groups?.blue) {
-      color = "#80bfff";
-    }
-    arrSequences.push({ id: uuidv4(), text: match[0], color });
-    index = match.index + match[0].length;
-  }
+    const newElem = { id: uuidv4(), text: elem, color };
+    return newElem;
+  });
 
   return arrSequences;
 }

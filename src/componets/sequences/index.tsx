@@ -1,40 +1,38 @@
-import { memo } from "react";
-import { cn as bem } from "@bem-react/classname";
-import type { ISequences } from "../../types";
-import "./style.less";
+import { memo, useEffect } from 'react';
+import { cn as bem } from '@bem-react/classname';
+import type { ISequences } from '../../types';
+import './style.less';
+import AminoAcids from '../amino-acids';
 
 interface ISequencesProps {
   sequences: ISequences[] | null;
 }
 
 function Sequences(props: ISequencesProps) {
-  const cn = bem("Sequences");
+  useEffect(() => {
+    const onSelectionChange = () => {
+      const selection = window.getSelection();
+      const text = selection?.toString();
+    };
+
+    document.addEventListener('selectionchange', onSelectionChange);
+
+    return () => {
+      document.removeEventListener('selectionchange', onSelectionChange);
+    };
+  }, []);
+
+  const cn = bem('Sequences');
 
   return (
     <div className={cn()}>
       <h2>Выравнивания</h2>
       {props.sequences?.map((sequence) => (
-        <div key={sequence.id}>
-          <div className={cn("aminoAcids")}>
-            {sequence.first.map((elem) => {
-              const style = elem.color ? { background: elem.color } : {};
-              return (
-                <span key={elem.id} style={style}>
-                  {elem.text}
-                </span>
-              );
-            })}
-          </div>
-          <div>
-            {sequence.second.map((elem) => {
-              const style = elem.color ? { background: elem.color } : {};
-              return (
-                <span key={elem.id} style={style}>
-                  {elem.text}
-                </span>
-              );
-            })}
-          </div>
+        <div key={sequence.id} className={cn('item')}>
+          <AminoAcids aminoAcids={sequence.first} first />
+          <AminoAcids aminoAcids={sequence.first} first hide />
+          <AminoAcids aminoAcids={sequence.second} second />
+          <AminoAcids aminoAcids={sequence.second} second hide />
         </div>
       ))}
     </div>
