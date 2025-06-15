@@ -9,10 +9,17 @@
           font-size: 14px;
           line-height: 157%;
           color: #1a2028;
+
+          @media (max-width: 400px) {
+            font-size: 12px;
+          }
         }
 
         &-explain-error {
           color: #ff514d;
+          @media (max-width: 400px) {
+            font-size: 12px;
+          }
         }
       }
     }
@@ -20,6 +27,7 @@
 
   &-error {
     position: relative;
-    top: -35px;
+    top: -20px;
+    margin-bottom: 14px;
   }
 }

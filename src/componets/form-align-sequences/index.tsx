@@ -34,6 +34,9 @@ function FormAlignSequences(props: IFormAlignSequencesProps) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     rulesSubmit: (_rule: RuleObject, _value: string) => {
       const { first, second } = props.form.getFieldsValue();
+      if (!first || !second) {
+        return;
+      }
       if (first.length !== second.length) {
         return Promise.reject([
           'Длина введенных последовательностей в обоих полях не одинаковая',
